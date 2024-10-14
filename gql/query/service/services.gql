@@ -1,0 +1,6 @@
+query Services($isSurgery: Boolean!) {
+  services(isSurgery: $isSurgery) {
+    id
+    title
+  }
+}

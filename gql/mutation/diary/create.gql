@@ -1,0 +1,33 @@
+mutation CreateDiary($input: DiaryInput!) {
+  createDiary(input: $input) {
+    diary {
+      id
+      price
+      status
+      intervention
+      interconsultation
+      weight
+      nextTime
+      startTime
+      endTime
+      createdAt
+      updatedAt
+      service {
+        id
+        title
+        description
+      }
+      patient {
+        id
+        dni
+        name
+        lastname
+        phone
+      }
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

@@ -1,0 +1,18 @@
+mutation CreatePatient($dni: String!) {
+  createPatient(dni: $dni) {
+    patient {
+      id
+      dni
+      name
+      lastname
+      phone
+      diaryCount
+      createdAt
+      updatedAt
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

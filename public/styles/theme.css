@@ -1,0 +1,35 @@
+.site59631.themed {
+    --theme-base-primary-color-h: 0;
+    --theme-base-primary-color-s: 0%;
+    --theme-base-primary-color-l: 40%;
+    --theme-base-primary-color-r: 102;
+    --theme-base-primary-color-g: 102;
+    --theme-base-primary-color-b: 102;
+
+    --theme-dark-primary-color-h: 0;
+    --theme-dark-primary-color-s: 0%;
+    --theme-dark-primary-color-l: 40%;
+    --theme-dark-primary-color-r: 102;
+    --theme-dark-primary-color-g: 102;
+    --theme-dark-primary-color-b: 102;
+}
+.site59631.themed.themed-avatar__sm {
+    background-color: var(--theme-primary-color);
+}
+
+.site59631.themed.themed-avatar__md {
+    background-color: var(--theme-primary-color);
+}
+
+.site59631.themed.themed-avatar__lg {
+    background-color: var(--theme-primary-color);
+}
+
+.site59631.themed.themed-avatar__xl {
+    background-color: var(--theme-primary-color);
+}
+.site59631.themed.channel59631-tag {
+    border-color: var(--theme-primary-300) !important;
+    color: var(--theme-primary-700) !important;
+    background-color: var(--theme-primary-050) !important;
+}

@@ -1,0 +1,8 @@
+query Comprehensives {
+  comprehensives {
+    id
+    name
+    isSurgery
+    serviceCount
+  }
+}

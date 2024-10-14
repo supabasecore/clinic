@@ -1,0 +1,14 @@
+mutation CreateComprehensive($input: ComprehensiveInput!) {
+  createComprehensive(input: $input) {
+    comprehensive {
+      id
+      name
+      isSurgery
+      serviceCount
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

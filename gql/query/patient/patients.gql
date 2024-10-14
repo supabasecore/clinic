@@ -1,0 +1,12 @@
+query Patients {
+  patients {
+    id
+    dni
+    name
+    lastname
+    phone
+    diaryCount
+    createdAt
+    updatedAt
+  }
+}
