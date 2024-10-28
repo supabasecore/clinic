@@ -3,6 +3,7 @@ import { withApollo } from "@/apollo/withApollo";
 import Container from "@/components/Container";
 import DiarySearch from "@/components/Diary/DiarySearch";
 import Loading from "@/components/Loading";
+import DiaryStatistic from "@/components/Services/DiaryStatistic";
 import { useDiaryQuery } from "@/gen/gql";
 import React, { useEffect, useState } from "react";
 
@@ -34,7 +35,7 @@ const page = (props: Props) => {
               <DiarySearch data={data!} loading={loading} />
             </div>
             <div className="flex--item3 fl-shrink0 md:order-last mt0">
-              <div className="d-grid">{/* <Component data={data!} /> */}</div>
+              <DiaryStatistic data={data!} />
             </div>
           </div>
         </div>

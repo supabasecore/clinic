@@ -1,0 +1,17 @@
+mutation CreateDiagnostic($input: DiagnosticInput!) {
+  createDiagnostic(input: $input) {
+    diagnostic {
+      id
+      diaryId
+      cie
+      description
+      presumptive
+      definitive
+      repetitive
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

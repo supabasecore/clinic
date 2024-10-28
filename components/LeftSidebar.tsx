@@ -49,6 +49,20 @@ const LeftSidebar: React.FC<{
                   </a>
                 </Link>
               </li>
+              <li
+                className={`ps-relative ${
+                  pathname.startsWith("/exams") ? "youarehere" : ""
+                }`}
+                aria-current="false"
+              >
+                <Link href={"/exams"} passHref legacyBehavior>
+                  <a className="pl8 js-gps-track nav-links--link">
+                    <div className="d-flex ai-center">
+                      <div className="flex--item truncate">General</div>
+                    </div>
+                  </a>
+                </Link>
+              </li>
 
               <li>
                 <ol className="nav-links">

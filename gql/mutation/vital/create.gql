@@ -1,0 +1,20 @@
+mutation CreateVital($input: VitalInput!) {
+  createVital(input: $input) {
+    vital {
+      id
+      diaryId
+      height
+      weight
+      temp
+      arterial
+      cardiac
+      respiratory
+      oxygen
+      comment
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

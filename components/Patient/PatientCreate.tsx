@@ -5,7 +5,11 @@ import { Form, Formik } from "formik";
 import { InputField } from "../InputField";
 import { Button } from "@chakra-ui/react";
 import { toErrorMap } from "@/utils/toErrorMap";
-import { useCreatePatientMutation } from "@/gen/gql";
+import {
+  PatientsDocument,
+  PatientsQuery,
+  useCreatePatientMutation,
+} from "@/gen/gql";
 
 type PatientCreateProps = {
   dni: string;
@@ -42,26 +46,30 @@ function PatientCreate({ isOpen, handleClose }: Props) {
             variables: {
               dni: values.dni,
             },
+            update: (cache, { data }) => {
+              if (data?.createPatient.patient) {
+                const existingComprehensives = cache.readQuery<PatientsQuery>({
+                  query: PatientsDocument,
+                });
+
+                const newComprehensive = data.createPatient.patient;
+
+                cache.writeQuery<PatientsQuery>({
+                  query: PatientsDocument,
+                  data: {
+                    patients: existingComprehensives?.patients
+                      ? [newComprehensive, ...existingComprehensives.patients]
+                      : [newComprehensive],
+                  },
+                });
+              }
+            },
           });
 
           if (response.data?.createPatient.errors) {
-            const errors = response.data.createPatient.errors
-              .filter((error) => error.field === "duplicate")
-              .map((error) => error.message)[0];
-            if (errors) {
-              handleClose();
-
-              router.push(
-                `/patients/${
-                  response.data.createPatient.errors.map((e) => e.message)[0]
-                }`
-              );
-            } else {
-              setErrors(toErrorMap(response.data.createPatient.errors));
-            }
+            setErrors(toErrorMap(response.data.createPatient.errors));
           } else if (response.data?.createPatient.patient) {
             handleClose();
-            router.push(`/patients/${response.data.createPatient.patient.id}`);
           }
         }}
       >

@@ -21,33 +21,40 @@ function ProductSearch({ data, loading }: Props) {
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
-
-  const filterProperties = ["id"];
-
+  
   const filtered = useMemo(() => {
     if (!data || !data.diary) return [];
 
-    return data.diary.filter((diary: any) => {
+    return data.diary.filter((diary) => {
       if (!searchTerm) return true;
 
       const lowerCasedSearchTerm = searchTerm.toLowerCase();
 
-      return filterProperties.some((prop) => {
-        const propValue = diary[prop];
+      // Buscar en el ID del diario
+      if (diary.id.toString().includes(lowerCasedSearchTerm)) {
+        return true;
+      }
 
-        if (propValue == null) {
-          return false;
-        }
+      // Buscar en el servicio
+      if (
+        diary.service.title.toLowerCase().includes(lowerCasedSearchTerm) ||
+        diary.service.id.toString().includes(lowerCasedSearchTerm)
+      ) {
+        return true;
+      }
 
-        if (prop === "id") {
-          return propValue.toLowerCase().includes(lowerCasedSearchTerm);
-        } else {
-          return propValue
-            .toLowerCase()
-            .split(" ")
-            .some((word: string) => word.startsWith(lowerCasedSearchTerm));
-        }
-      });
+      // Buscar en el paciente
+      const patientFullName =
+        `${diary.patient.name} ${diary.patient.lastname}`.toLowerCase();
+      if (
+        patientFullName.includes(lowerCasedSearchTerm) ||
+        diary.patient.dni.toLowerCase().includes(lowerCasedSearchTerm) ||
+        diary.patient.id.toString().includes(lowerCasedSearchTerm)
+      ) {
+        return true;
+      }
+
+      return false;
     });
   }, [data, searchTerm]);
 
@@ -60,9 +67,9 @@ function ProductSearch({ data, loading }: Props) {
           Centro Médico El Valentino
         </div>
         <p className="fs-body1 fc-black-500">
-          Aquí puedes ver, gestionar y reprogramar tus citas médicas. <br/>Usa el
-          buscador o explora la lista para encontrar la información de tus
-          consultas.
+          Aquí puedes ver, gestionar y reprogramar tus citas médicas. <br />
+          Usa el buscador o explora la lista para encontrar la información de
+          tus consultas.
         </p>
         <div className="ps-absolute t0 r0 d-flex gs6 fw-wrap">
           <div

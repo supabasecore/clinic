@@ -1,0 +1,14 @@
+mutation CreateHistory($input: HistoryInput!) {
+  createHistory(input: $input) {
+    history {
+      id
+      diaryId
+      disease
+      person
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

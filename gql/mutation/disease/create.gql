@@ -1,0 +1,16 @@
+mutation CreateDisease($input: DiseaseInput!) {
+  createDisease(input: $input) {
+    disease {
+      id
+      diaryId
+      comment
+      isCourse
+      isStart
+      sickTime
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

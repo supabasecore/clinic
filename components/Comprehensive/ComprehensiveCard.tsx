@@ -73,16 +73,9 @@ function ComprehensiveCard({ pathname, comprehensives }: Props) {
                   <div className="s-link mb4">
                     {c.id.toString().padStart(4, "0")}
                   </div>
-                  <Link
-                    passHref
-                    legacyBehavior
-                    href={`/services/[serviceId]`}
-                    as={`/services/${c.id}`}
-                  >
-                    <a className="s-link s-post-summary--content-excerpt mb0">
-                      {c.name.toUpperCase()}
-                    </a>
-                  </Link>
+                  <div className="s-link s-post-summary--content-excerpt mb0">
+                    {c.name.toUpperCase()}
+                  </div>
                 </h4>
 
                 <div className="s-post-summary--meta mt4">

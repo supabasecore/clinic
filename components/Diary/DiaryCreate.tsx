@@ -4,7 +4,6 @@ import { Form, Formik } from "formik";
 import {
   DiaryDocument,
   DiaryQuery,
-  useComprehensivesQuery,
   useCreateDiaryMutation,
   useServicesQuery,
 } from "@/gen/gql";
@@ -57,7 +56,7 @@ const DiaryCreate = ({ isOpen, handleClose }: Props) => {
   const [weight, setWeight] = useState<number | null>(null);
 
   const priceResponse = price !== null ? price : 0;
-  const weightResponse = weight !== null ? price : 0;
+  const weightResponse = weight !== null ? weight : 0;
 
   const [selectedOption, setSelectedOption] = useState("PENDING");
 
@@ -135,9 +134,9 @@ const DiaryCreate = ({ isOpen, handleClose }: Props) => {
             </div>
             <div className="fc-black-400">
               Por favor, completa la información requerida para agendar tu cita.
-              <br/>Selecciona el tipo de servicio,
-              ingresa los detalles del paciente y programa la fecha y hora de la
-              consulta.
+              <br />
+              Selecciona el tipo de servicio, ingresa los detalles del paciente
+              y programa la fecha y hora de la consulta.
             </div>
             <div className="d-flex fd-column mt24">
               <div className="d-flex gs24 md:fd-column">

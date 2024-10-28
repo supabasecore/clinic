@@ -23,5 +23,58 @@ query Diary {
       lastname
       phone
     }
+    vital {
+      id
+      diaryId
+      height
+      weight
+      temp
+      arterial
+      cardiac
+      respiratory
+      oxygen
+      comment
+    }
+    auxiliary {
+      id
+      diaryId
+      comment
+      service {
+        id
+        title
+      }
+    }
+    diagnostic {
+      id
+      diaryId
+      cie
+      description
+      presumptive
+      definitive
+      repetitive
+    }
+    treatment {
+      id
+      diaryId
+      medicine
+      presentation
+      quantity
+      dose
+      days
+    }
+    history {
+      id
+      diaryId
+      person
+      disease
+    }
+    disease {
+      id
+      diaryId
+      isStart
+      isCourse
+      sickTime
+      comment
+    }
   }
 }

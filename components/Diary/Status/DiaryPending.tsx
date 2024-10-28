@@ -7,6 +7,7 @@ import DiaryUpdate from "../Update/DiaryUpdate";
 import TagList from "@/components/TagList";
 import jsPDF from "jspdf";
 import autoTable, { RowInput } from "jspdf-autotable";
+import DiaryHistory from "../DiaryHistory";
 
 type Diary = {
   id: number;
@@ -32,6 +33,62 @@ type Diary = {
     lastname: string;
     phone?: string | null;
   };
+  vital: Array<{
+    __typename?: "Vital";
+    id: number;
+    diaryId: number;
+    height?: number | null;
+    weight?: number | null;
+    temp?: number | null;
+    arterial?: number | null;
+    cardiac?: number | null;
+    respiratory?: number | null;
+    oxygen?: number | null;
+    comment: string;
+  }>;
+  auxiliary: Array<{
+    __typename?: "Auxiliary";
+    id: number;
+    diaryId: number;
+    comment?: string | null;
+    service?: { __typename?: "Service"; id: number; title: string } | null;
+  }>;
+  diagnostic: Array<{
+    __typename?: "Diagnostic";
+    id: number;
+    diaryId: number;
+    cie: string;
+    description: string;
+    presumptive?: string | null;
+    definitive?: string | null;
+    repetitive?: string | null;
+  }>;
+  treatment: Array<{
+    __typename?: "Treatment";
+    id: number;
+    diaryId: number;
+    medicine?: string | null;
+    presentation?: string | null;
+    quantity?: number | null;
+    dose?: number | null;
+    days?: number | null;
+  }>;
+  history: Array<{
+    __typename?: "History";
+    id: number;
+    diaryId: number;
+    person: string;
+    disease: string;
+  }>;
+  disease: Array<{
+    __typename?: "Disease";
+    id: number;
+    diaryId: number;
+    isStart: boolean;
+    isCourse: boolean;
+    sickTime?: number | null;
+    comment?: string | null;
+  }>;
 };
 
 type Props = {
@@ -41,122 +98,201 @@ type Props = {
   data: Diary[];
 };
 
+interface ExtendedJsPDF extends jsPDF {
+  lastAutoTable?: { finalY: number };
+}
+
 const DiaryPending = ({ data, setDiary, diaryId }: Props) => {
-  const donwload = (d: Diary) => {
-    const doc = new jsPDF();
-
-    const tableRows: RowInput[] = [];
-
+  const download = (d: Diary) => {
+    const doc = new jsPDF() as ExtendedJsPDF;
     const pageWidth = doc.internal.pageSize.getWidth();
-    const imageHeight = 70;
-    const imageWidth = 95;
+    const pageHeight = doc.internal.pageSize.getHeight();
 
-    const x = (pageWidth - imageWidth) / 2;
+    const addHeader = () => {
+      // Add logo
+      const imageHeight = 30;
+      const imageWidth = 40;
+      const x = 10;
+      doc.addImage("/assets/logo.png", "PNG", x, 10, imageWidth, imageHeight);
 
-    doc.addImage("/assets/logo.png", "PNG", x, 0, imageWidth, imageHeight);
+      // Add title
+      doc.setFontSize(18);
+      doc.setTextColor(72, 61, 139);
+      doc.text("HISTORIA CLÍNICA", pageWidth - 15, 25, { align: "right" });
 
-    tableRows.push([
-      {
-        content: "CITA MEDICA",
-        styles: { fontStyle: "bold", textColor: [33, 28, 107] },
-      },
-      {
-        content: d.id.toString().padStart(4, "0"),
-        styles: { textColor: [33, 28, 107] },
-      },
-    ]);
+      // Add medical center name
+      doc.setFontSize(14);
 
-    tableRows.push([
-      {
-        content: "SERVICIO",
-        styles: { fontStyle: "bold", textColor: [33, 28, 107] },
-      },
-      {
-        content: d.service.title,
-        styles: { textColor: [33, 28, 107] },
-      },
-    ]);
+      // Add patient information header
+      doc.setFontSize(10);
+      doc.text(`N° Historia: ${d.id.toString().padStart(4, "0")}`, 10, 45);
+      doc.text(
+        `Fecha de atención: ${formatMonthAndDay({ createdAt: d.startTime })}`,
+        pageWidth - 10,
+        45,
+        { align: "right" }
+      );
+    };
 
-    tableRows.push([
-      {
-        content: "CITA",
-        styles: { fontStyle: "bold", textColor: [33, 28, 107] },
-      },
-      {
-        content: capitalizeWords(formatMonthAndDay({ createdAt: d.startTime })),
-        styles: { textColor: [33, 28, 107] },
-      },
-    ]);
+    // First page
+    addHeader();
 
-    tableRows.push([
-      {
-        content: "PACIENTE",
-        styles: { fontStyle: "bold", textColor: [33, 28, 107] },
-      },
-      {
-        content: `${d.patient.name} ${d.patient.lastname}`,
-        styles: { textColor: [33, 28, 107] },
-      },
-    ]);
-
-    if (d.intervention?.length) {
-      tableRows.push([
-        {
-          content: "INTERVENCION",
-          styles: { fontStyle: "bold", textColor: [33, 28, 107] },
-        },
-        {
-          content: d.intervention ?? "Sin datos",
-          styles: { textColor: [33, 28, 107] },
-        },
-      ]);
-    }
-
-    if (d.interconsultation?.length) {
-      tableRows.push([
-        {
-          content: "INTERCONSULTA",
-          styles: { fontStyle: "bold", textColor: [33, 28, 107] },
-        },
-        {
-          content: d.interconsultation ?? "Sin datos",
-          styles: { textColor: [33, 28, 107] },
-        },
-      ]);
-    }
-
-    if (d.price > 0) {
-      tableRows.push([
-        {
-          content: "PRECIO",
-          styles: { fontStyle: "bold", textColor: [33, 28, 107] },
-        },
-        {
-          content: `S/. ${d.price} Soles`,
-          styles: { textColor: [33, 28, 107] },
-        },
-      ]);
-    }
-
+    // Patient information (FILIACIÓN)
     autoTable(doc, {
-      head: [["", ""]],
-      margin: { bottom: 15 },
-      startY: 60,
-      body: tableRows,
-      theme: "plain",
-      styles: {
-        fontSize: 12.5,
-        textColor: [33, 28, 107],
-        cellPadding: {
-          bottom: 1.5,
-        },
-      },
-      columnStyles: {
-        0: { cellWidth: "auto" },
-      },
+      startY: 50,
+      head: [["FILIACIÓN"]],
+      body: [
+        [`Nombres y Apellidos: ${d.patient.name} ${d.patient.lastname}`],
+        [`Celular: ${d.patient.phone ?? "Sin datos"}`],
+        [`DNI: ${d.patient.dni}`],
+      ],
+      theme: "grid",
+      headStyles: { fillColor: [58, 157, 74], textColor: 255 },
+      styles: { fontSize: 8, cellPadding: 2 },
     });
 
-    doc.save(`cita${d.id.toString().padStart(4, "0")}.pdf`);
+    // Current illness (ENFERMEDAD ACTUAL)
+    autoTable(doc, {
+      startY: doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 5 : 90,
+      head: [["ENFERMEDAD ACTUAL"]],
+      body: [
+        [`INICIO: ${d.disease[0]?.isStart ? "BRUSCO" : "INSIDIOSO"}`],
+        [`CURSO: ${d.disease[0]?.isCourse ? "PROGRESIVO" : "ESTACIONARIO"}`],
+        [`TIEMPO DE ENFERMEDAD: ${d.disease[0]?.sickTime || ""} días`],
+        [`RELATO: ${d.disease[0]?.comment || ""}`],
+      ],
+      theme: "grid",
+      headStyles: { fillColor: [58, 157, 74], textColor: 255 },
+      styles: { fontSize: 8, cellPadding: 2 },
+    });
+
+    // Medical history (ANTECEDENTES)
+    autoTable(doc, {
+      startY: doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 5 : 130,
+      head: [["ANTECEDENTES"]],
+      body: [
+        [
+          `Reacción adversa a medicamentos: ${
+            d.history[0]?.disease ?? "Sin datos"
+          }`,
+        ],
+        [`Personajes: ${d.history[0]?.person ?? "Sin datos"}`],
+      ],
+      theme: "grid",
+      headStyles: { fillColor: [58, 157, 74], textColor: 255 },
+      styles: { fontSize: 8, cellPadding: 2 },
+    });
+
+    // Vital signs (EXAMEN CLÍNICO: FUNCIONES VITALES)
+    const vitalSigns: RowInput[] = d.vital[0]
+      ? [
+          [`PESO: ${d.vital[0]?.weight || ""} kg`],
+          [`TALLA: ${d.vital[0]?.height || ""} cm`],
+          [`TEMP.: ${d.vital[0]?.temp || ""} °C`],
+          [`PRESIÓN ARTERIAL: ${d.vital[0]?.arterial || ""} mmHg`],
+          [`FREC. CARDIACA: ${d.vital[0]?.cardiac || ""} lpm`],
+          [`FREC. RESPIRATORIA: ${d.vital[0]?.respiratory || ""} rpm`],
+          [`SAT. DE OXÍGENO: ${d.vital[0]?.oxygen || ""} %`],
+        ]
+      : [["No hay datos de signos vitales"]];
+
+    autoTable(doc, {
+      startY: doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 5 : 170,
+      head: [["EXAMEN CLÍNICO: FUNCIONES VITALES"]],
+      body: vitalSigns,
+      theme: "grid",
+      headStyles: { fillColor: [58, 157, 74], textColor: 255 },
+      styles: { fontSize: 8, cellPadding: 2 },
+    });
+
+    const auxiliaryRows = d.auxiliary.map((t) => [
+      `- ${t.service?.title || ""}\n- ${t.comment ?? "Sin datos"}`,
+    ]);
+
+    // General examination (EXAMEN GENERAL)
+    autoTable(doc, {
+      startY: doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 5 : 200,
+      head: [["EXAMEN GENERAL"]],
+      body: auxiliaryRows,
+      theme: "grid",
+      headStyles: { fillColor: [58, 157, 74], textColor: 255 },
+      styles: { fontSize: 8, cellPadding: 2 },
+    });
+
+    // Diagnostic impression (IMPRESIÓN DIAGNÓSTICA)
+    const diagnostics: RowInput[] = d.diagnostic.map((diag) => [
+      `CIE-10: ${diag.cie}`,
+      `DESCRIPCIÓN DEL DIAGNÓSTICO: ${diag.description}`,
+      `PRESUNTIVO: ${diag.presumptive ?? "Sin datos"}`,
+      `DEFINITIVO: ${diag.definitive ?? "Sin datos"}`,
+      `REPETITIVO: ${diag.repetitive ?? "Sin datos"}`,
+    ]);
+
+    autoTable(doc, {
+      startY: doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 5 : 230,
+      head: [["IMPRESIÓN DIAGNÓSTICA"]],
+      body: [...diagnostics],
+      theme: "grid",
+      headStyles: { fillColor: [58, 157, 74], textColor: 255 },
+      styles: { fontSize: 8, cellPadding: 2 },
+    });
+
+    // Second page
+    doc.addPage();
+    addHeader();
+
+    // Procedures and interventions (PROCEDIMIENTOS - INTERVENCIONES)
+    autoTable(doc, {
+      startY: 50,
+      head: [["PROCEDIMIENTOS - INTERVENCIONES"]],
+      body: [[d.intervention || ""]],
+      theme: "grid",
+      headStyles: { fillColor: [58, 157, 74], textColor: 255 },
+      styles: { fontSize: 8, cellPadding: 2 },
+    });
+
+    const treatmentRows = d.treatment.map((t) => [
+      `DÍAS: ${t.days?.toString() || ""}\nDOSIS: ${
+        t.dose?.toString() || ""
+      }\nCANTIDAD: ${t.quantity?.toString() || ""}\nMEDICAMENTO: \n${
+        t.medicine?.replace(/\n/g, "\n") || ""
+      } \nPRESENTACIÓN: \n${t.presentation || ""} `,
+    ]);
+
+    // Treatment (TRATAMIENTO)
+    autoTable(doc, {
+      startY: doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 5 : 80,
+      head: [["TRATAMIENTO"]],
+      body: treatmentRows,
+      theme: "grid",
+      headStyles: { fillColor: [58, 157, 74], textColor: 255 },
+      styles: { fontSize: 8, cellPadding: 2 },
+    });
+
+    // Observations (OBSERVACIONES)
+    autoTable(doc, {
+      startY: doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 5 : 160,
+      head: [["OBSERVACIONES"]],
+      body: [
+        [`Próxima Cita: ${formatMonthAndDay({ createdAt: d.nextTime })}`],
+        [`Interconsulta: ${d.interconsultation ?? "Sin datos"}`],
+        [`Referencia de Emergencia: ${d.service.title}`],
+        ["Establecimiento de Salud: EL VALENTINO"],
+      ],
+      theme: "grid",
+      headStyles: { fillColor: [58, 157, 74], textColor: 255 },
+      styles: { fontSize: 8, cellPadding: 2 },
+    });
+
+    // Add signature and stamp area
+    doc.setFontSize(8);
+    doc.text("Firma y Sello", pageWidth - 40, pageHeight - 20, {
+      align: "center",
+    });
+    doc.line(pageWidth - 70, pageHeight - 25, pageWidth - 10, pageHeight - 25);
+
+    // Save the PDF
+    doc.save(`historia_clinica_${d.id.toString().padStart(4, "0")}.pdf`);
   };
 
   return data?.length === 0 ? (
@@ -195,7 +331,7 @@ const DiaryPending = ({ data, setDiary, diaryId }: Props) => {
               <div className="d-flex">
                 <div
                   onClick={() =>
-                    d.status !== "ATTENDED" ? setDiary(d.id) : donwload(d)
+                    d.status !== "ATTENDED" ? setDiary(d.id) : download(d)
                   }
                   className="s-link s-user-card--link d-flex gs4"
                 >
@@ -304,6 +440,17 @@ const DiaryPending = ({ data, setDiary, diaryId }: Props) => {
               handleClose={() => setDiary(0)}
               isOpen={diaryId === d.id}
             />
+            {d.status === "PROCESSED" && (
+              <DiaryHistory
+                diaryId={d.id}
+                auxiliary={d.auxiliary}
+                diagnostic={d.diagnostic}
+                disease={d.disease}
+                history={d.history}
+                treatment={d.treatment}
+                vital={d.vital}
+              />
+            )}
           </div>
         </div>
       ))}

@@ -1,0 +1,9 @@
+query AllServices {
+  allServices {
+    id
+    title
+    comprehensive {
+      name
+    }
+  }
+}

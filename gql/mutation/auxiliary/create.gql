@@ -1,0 +1,14 @@
+mutation CreateAuxiliary($input: AuxiliaryInput!) {
+  createAuxiliary(input: $input) {
+    auxiliary {
+      id
+      diaryId
+      serviceId
+      comment
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

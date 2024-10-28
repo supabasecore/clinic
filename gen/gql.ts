@@ -23,6 +23,7 @@ export type Auxiliary = {
   comment?: Maybe<Scalars['String']['output']>;
   diaryId: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
+  service?: Maybe<Service>;
   serviceId: Scalars['Int']['output'];
 };
 
@@ -77,7 +78,7 @@ export type Diagnostic = {
   cie: Scalars['String']['output'];
   definitive?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
-  diaryId?: Maybe<Scalars['Int']['output']>;
+  diaryId: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
   presumptive?: Maybe<Scalars['String']['output']>;
   repetitive?: Maybe<Scalars['String']['output']>;
@@ -93,7 +94,7 @@ export type DiagnosticInput = {
   cie: Scalars['String']['input'];
   definitive?: InputMaybe<Scalars['String']['input']>;
   description: Scalars['String']['input'];
-  diaryId?: InputMaybe<Scalars['Int']['input']>;
+  diaryId: Scalars['Int']['input'];
   presumptive?: InputMaybe<Scalars['String']['input']>;
   repetitive?: InputMaybe<Scalars['String']['input']>;
 };
@@ -106,8 +107,12 @@ export type DiagnosticResponse = {
 
 export type Diary = {
   __typename?: 'Diary';
+  auxiliary: Array<Auxiliary>;
   createdAt: Scalars['DateTimeISO']['output'];
+  diagnostic: Array<Diagnostic>;
+  disease: Array<Disease>;
   endTime?: Maybe<Scalars['DateTimeISO']['output']>;
+  history: Array<History>;
   id: Scalars['Int']['output'];
   interconsultation?: Maybe<Scalars['String']['output']>;
   intervention?: Maybe<Scalars['String']['output']>;
@@ -119,7 +124,9 @@ export type Diary = {
   serviceId: Scalars['Int']['output'];
   startTime: Scalars['DateTimeISO']['output'];
   status: Scalars['String']['output'];
+  treatment: Array<Treatment>;
   updatedAt: Scalars['DateTimeISO']['output'];
+  vital: Array<Vital>;
   weight?: Maybe<Scalars['Float']['output']>;
 };
 
@@ -165,7 +172,7 @@ export type Disease = {
   id: Scalars['Int']['output'];
   isCourse: Scalars['Boolean']['output'];
   isStart: Scalars['Boolean']['output'];
-  sickTime: Scalars['Int']['output'];
+  sickTime?: Maybe<Scalars['Int']['output']>;
 };
 
 export type DiseaseFieldError = {
@@ -196,7 +203,7 @@ export type FieldError = {
 
 export type History = {
   __typename?: 'History';
-  diaryId?: Maybe<Scalars['Int']['output']>;
+  diaryId: Scalars['Int']['output'];
   disease: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   person: Scalars['String']['output'];
@@ -350,6 +357,7 @@ export type PatientResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  allServices?: Maybe<Array<Service>>;
   comprehensives?: Maybe<Array<Comprehensive>>;
   diary?: Maybe<Array<Diary>>;
   me?: Maybe<User>;
@@ -364,7 +372,7 @@ export type QueryServicesArgs = {
 
 export type Service = {
   __typename?: 'Service';
-  comprehensive: Comprehensive;
+  comprehensive?: Maybe<Comprehensive>;
   comprehensiveId: Scalars['Int']['output'];
   createdAt: Scalars['DateTimeISO']['output'];
   description: Scalars['String']['output'];
@@ -394,7 +402,7 @@ export type ServiceResponse = {
 export type Treatment = {
   __typename?: 'Treatment';
   days?: Maybe<Scalars['Int']['output']>;
-  diaryId?: Maybe<Scalars['Int']['output']>;
+  diaryId: Scalars['Int']['output'];
   dose?: Maybe<Scalars['Int']['output']>;
   id: Scalars['Int']['output'];
   medicine?: Maybe<Scalars['String']['output']>;
@@ -447,16 +455,16 @@ export type UsernamePasswordInput = {
 
 export type Vital = {
   __typename?: 'Vital';
-  arterial: Scalars['Float']['output'];
-  cardiac: Scalars['Float']['output'];
+  arterial?: Maybe<Scalars['Float']['output']>;
+  cardiac?: Maybe<Scalars['Float']['output']>;
   comment: Scalars['String']['output'];
-  diaryId?: Maybe<Scalars['Int']['output']>;
-  height: Scalars['Float']['output'];
+  diaryId: Scalars['Int']['output'];
+  height?: Maybe<Scalars['Float']['output']>;
   id: Scalars['Int']['output'];
-  oxygen: Scalars['Float']['output'];
-  respiratory: Scalars['Float']['output'];
-  temp: Scalars['Float']['output'];
-  weight: Scalars['Float']['output'];
+  oxygen?: Maybe<Scalars['Float']['output']>;
+  respiratory?: Maybe<Scalars['Float']['output']>;
+  temp?: Maybe<Scalars['Float']['output']>;
+  weight?: Maybe<Scalars['Float']['output']>;
 };
 
 export type VitalFieldError = {
@@ -466,15 +474,15 @@ export type VitalFieldError = {
 };
 
 export type VitalInput = {
-  arterial: Scalars['Float']['input'];
-  cardiac: Scalars['Float']['input'];
-  comment: Scalars['String']['input'];
+  arterial?: InputMaybe<Scalars['Float']['input']>;
+  cardiac?: InputMaybe<Scalars['Float']['input']>;
+  comment?: InputMaybe<Scalars['String']['input']>;
   diaryId: Scalars['Int']['input'];
-  height: Scalars['Float']['input'];
-  oxygen: Scalars['Float']['input'];
-  respiratory: Scalars['Float']['input'];
-  temp: Scalars['Float']['input'];
-  weight: Scalars['Float']['input'];
+  height?: InputMaybe<Scalars['Float']['input']>;
+  oxygen?: InputMaybe<Scalars['Float']['input']>;
+  respiratory?: InputMaybe<Scalars['Float']['input']>;
+  temp?: InputMaybe<Scalars['Float']['input']>;
+  weight?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type VitalResponse = {
@@ -496,6 +504,13 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type CreateAuxiliaryMutationVariables = Exact<{
+  input: AuxiliaryInput;
+}>;
+
+
+export type CreateAuxiliaryMutation = { __typename?: 'Mutation', createAuxiliary: { __typename?: 'AuxiliaryResponse', auxiliary?: { __typename?: 'Auxiliary', id: number, diaryId: number, serviceId: number, comment?: string | null } | null, errors?: Array<{ __typename?: 'AuxiliaryFieldError', field: string, message: string }> | null } };
+
 export type CreateComprehensiveMutationVariables = Exact<{
   input: ComprehensiveInput;
 }>;
@@ -510,12 +525,19 @@ export type DeleteComprehensiveMutationVariables = Exact<{
 
 export type DeleteComprehensiveMutation = { __typename?: 'Mutation', deleteComprehensive: boolean };
 
+export type CreateDiagnosticMutationVariables = Exact<{
+  input: DiagnosticInput;
+}>;
+
+
+export type CreateDiagnosticMutation = { __typename?: 'Mutation', createDiagnostic: { __typename?: 'DiagnosticResponse', diagnostic?: { __typename?: 'Diagnostic', id: number, diaryId: number, cie: string, description: string, presumptive?: string | null, definitive?: string | null, repetitive?: string | null } | null, errors?: Array<{ __typename?: 'DiagnosticFieldError', field: string, message: string }> | null } };
+
 export type CreateDiaryMutationVariables = Exact<{
   input: DiaryInput;
 }>;
 
 
-export type CreateDiaryMutation = { __typename?: 'Mutation', createDiary: { __typename?: 'DiaryResponse', diary?: { __typename?: 'Diary', id: number, price: number, status: string, intervention?: string | null, interconsultation?: string | null, weight?: number | null, nextTime?: any | null, startTime: any, endTime?: any | null, createdAt: any, updatedAt: any, service: { __typename?: 'Service', id: number, title: string, description: string }, patient: { __typename?: 'Patient', id: number, dni: string, name: string, lastname: string, phone?: string | null } } | null, errors?: Array<{ __typename?: 'DiaryFieldError', field: string, message: string }> | null } };
+export type CreateDiaryMutation = { __typename?: 'Mutation', createDiary: { __typename?: 'DiaryResponse', diary?: { __typename?: 'Diary', id: number, price: number, status: string, intervention?: string | null, interconsultation?: string | null, weight?: number | null, nextTime?: any | null, startTime: any, endTime?: any | null, createdAt: any, updatedAt: any, service: { __typename?: 'Service', id: number, title: string, description: string }, patient: { __typename?: 'Patient', id: number, dni: string, name: string, lastname: string, phone?: string | null }, vital: Array<{ __typename?: 'Vital', id: number, diaryId: number, height?: number | null, weight?: number | null, temp?: number | null, arterial?: number | null, cardiac?: number | null, respiratory?: number | null, oxygen?: number | null, comment: string }>, auxiliary: Array<{ __typename?: 'Auxiliary', id: number, diaryId: number, service?: { __typename?: 'Service', id: number, title: string } | null }>, diagnostic: Array<{ __typename?: 'Diagnostic', id: number, diaryId: number, cie: string, description: string, presumptive?: string | null, definitive?: string | null, repetitive?: string | null }>, treatment: Array<{ __typename?: 'Treatment', id: number, diaryId: number, medicine?: string | null, presentation?: string | null, quantity?: number | null, dose?: number | null, days?: number | null }>, history: Array<{ __typename?: 'History', id: number, diaryId: number, person: string, disease: string }>, disease: Array<{ __typename?: 'Disease', id: number, diaryId: number, isStart: boolean, isCourse: boolean, sickTime?: number | null, comment?: string | null }> } | null, errors?: Array<{ __typename?: 'DiaryFieldError', field: string, message: string }> | null } };
 
 export type DeleteDiaryMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -531,6 +553,20 @@ export type UpdateDiaryStatusMutationVariables = Exact<{
 
 
 export type UpdateDiaryStatusMutation = { __typename?: 'Mutation', updateDiaryStatus: { __typename?: 'DiaryResponse', diary?: { __typename?: 'Diary', id: number, price: number, status: string, intervention?: string | null, interconsultation?: string | null, weight?: number | null, nextTime?: any | null, startTime: any, endTime?: any | null, createdAt: any, updatedAt: any, service: { __typename?: 'Service', id: number, title: string, description: string }, patient: { __typename?: 'Patient', id: number, dni: string, name: string, lastname: string, phone?: string | null } } | null, errors?: Array<{ __typename?: 'DiaryFieldError', field: string, message: string }> | null } };
+
+export type CreateDiseaseMutationVariables = Exact<{
+  input: DiseaseInput;
+}>;
+
+
+export type CreateDiseaseMutation = { __typename?: 'Mutation', createDisease: { __typename?: 'DiseaseResponse', disease?: { __typename?: 'Disease', id: number, diaryId: number, comment?: string | null, isCourse: boolean, isStart: boolean, sickTime?: number | null } | null, errors?: Array<{ __typename?: 'DiseaseFieldError', field: string, message: string }> | null } };
+
+export type CreateHistoryMutationVariables = Exact<{
+  input: HistoryInput;
+}>;
+
+
+export type CreateHistoryMutation = { __typename?: 'Mutation', createHistory: { __typename?: 'HistoryResponse', history?: { __typename?: 'History', id: number, diaryId: number, disease: string, person: string } | null, errors?: Array<{ __typename?: 'HistoryFieldError', field: string, message: string }> | null } };
 
 export type CreatePatientMutationVariables = Exact<{
   dni: Scalars['String']['input'];
@@ -551,7 +587,21 @@ export type CreateServiceMutationVariables = Exact<{
 }>;
 
 
-export type CreateServiceMutation = { __typename?: 'Mutation', createService: { __typename?: 'ServiceResponse', service?: { __typename?: 'Service', id: number, title: string, description: string, comprehensive: { __typename?: 'Comprehensive', id: number, name: string } } | null, errors?: Array<{ __typename?: 'ServiceFieldError', field: string, message: string }> | null } };
+export type CreateServiceMutation = { __typename?: 'Mutation', createService: { __typename?: 'ServiceResponse', service?: { __typename?: 'Service', id: number, title: string, description: string, comprehensive?: { __typename?: 'Comprehensive', id: number, name: string } | null } | null, errors?: Array<{ __typename?: 'ServiceFieldError', field: string, message: string }> | null } };
+
+export type CreateTreatmentMutationVariables = Exact<{
+  input: TreatmentInput;
+}>;
+
+
+export type CreateTreatmentMutation = { __typename?: 'Mutation', createTreatment: { __typename?: 'TreatmentResponse', treatment?: { __typename?: 'Treatment', id: number, diaryId: number, days?: number | null, dose?: number | null, medicine?: string | null, presentation?: string | null, quantity?: number | null } | null, errors?: Array<{ __typename?: 'TreatmentFieldError', field: string, message: string }> | null } };
+
+export type CreateVitalMutationVariables = Exact<{
+  input: VitalInput;
+}>;
+
+
+export type CreateVitalMutation = { __typename?: 'Mutation', createVital: { __typename?: 'VitalResponse', vital?: { __typename?: 'Vital', id: number, diaryId: number, height?: number | null, weight?: number | null, temp?: number | null, arterial?: number | null, cardiac?: number | null, respiratory?: number | null, oxygen?: number | null, comment: string } | null, errors?: Array<{ __typename?: 'VitalFieldError', field: string, message: string }> | null } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -566,12 +616,17 @@ export type ComprehensivesQuery = { __typename?: 'Query', comprehensives?: Array
 export type DiaryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DiaryQuery = { __typename?: 'Query', diary?: Array<{ __typename?: 'Diary', id: number, price: number, status: string, intervention?: string | null, interconsultation?: string | null, weight?: number | null, nextTime?: any | null, startTime: any, endTime?: any | null, createdAt: any, updatedAt: any, service: { __typename?: 'Service', id: number, title: string, description: string }, patient: { __typename?: 'Patient', id: number, dni: string, name: string, lastname: string, phone?: string | null } }> | null };
+export type DiaryQuery = { __typename?: 'Query', diary?: Array<{ __typename?: 'Diary', id: number, price: number, status: string, intervention?: string | null, interconsultation?: string | null, weight?: number | null, nextTime?: any | null, startTime: any, endTime?: any | null, createdAt: any, updatedAt: any, service: { __typename?: 'Service', id: number, title: string, description: string }, patient: { __typename?: 'Patient', id: number, dni: string, name: string, lastname: string, phone?: string | null }, vital: Array<{ __typename?: 'Vital', id: number, diaryId: number, height?: number | null, weight?: number | null, temp?: number | null, arterial?: number | null, cardiac?: number | null, respiratory?: number | null, oxygen?: number | null, comment: string }>, auxiliary: Array<{ __typename?: 'Auxiliary', id: number, diaryId: number, comment?: string | null, service?: { __typename?: 'Service', id: number, title: string } | null }>, diagnostic: Array<{ __typename?: 'Diagnostic', id: number, diaryId: number, cie: string, description: string, presumptive?: string | null, definitive?: string | null, repetitive?: string | null }>, treatment: Array<{ __typename?: 'Treatment', id: number, diaryId: number, medicine?: string | null, presentation?: string | null, quantity?: number | null, dose?: number | null, days?: number | null }>, history: Array<{ __typename?: 'History', id: number, diaryId: number, person: string, disease: string }>, disease: Array<{ __typename?: 'Disease', id: number, diaryId: number, isStart: boolean, isCourse: boolean, sickTime?: number | null, comment?: string | null }> }> | null };
 
 export type PatientsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type PatientsQuery = { __typename?: 'Query', patients?: Array<{ __typename?: 'Patient', id: number, dni: string, name: string, lastname: string, phone?: string | null, diaryCount?: number | null, createdAt: any, updatedAt: any }> | null };
+
+export type AllServicesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllServicesQuery = { __typename?: 'Query', allServices?: Array<{ __typename?: 'Service', id: number, title: string, comprehensive?: { __typename?: 'Comprehensive', name: string } | null }> | null };
 
 export type ServicesQueryVariables = Exact<{
   isSurgery: Scalars['Boolean']['input'];
@@ -651,6 +706,48 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const CreateAuxiliaryDocument = gql`
+    mutation CreateAuxiliary($input: AuxiliaryInput!) {
+  createAuxiliary(input: $input) {
+    auxiliary {
+      id
+      diaryId
+      serviceId
+      comment
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type CreateAuxiliaryMutationFn = Apollo.MutationFunction<CreateAuxiliaryMutation, CreateAuxiliaryMutationVariables>;
+
+/**
+ * __useCreateAuxiliaryMutation__
+ *
+ * To run a mutation, you first call `useCreateAuxiliaryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAuxiliaryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAuxiliaryMutation, { data, loading, error }] = useCreateAuxiliaryMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAuxiliaryMutation(baseOptions?: Apollo.MutationHookOptions<CreateAuxiliaryMutation, CreateAuxiliaryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAuxiliaryMutation, CreateAuxiliaryMutationVariables>(CreateAuxiliaryDocument, options);
+      }
+export type CreateAuxiliaryMutationHookResult = ReturnType<typeof useCreateAuxiliaryMutation>;
+export type CreateAuxiliaryMutationResult = Apollo.MutationResult<CreateAuxiliaryMutation>;
+export type CreateAuxiliaryMutationOptions = Apollo.BaseMutationOptions<CreateAuxiliaryMutation, CreateAuxiliaryMutationVariables>;
 export const CreateComprehensiveDocument = gql`
     mutation CreateComprehensive($input: ComprehensiveInput!) {
   createComprehensive(input: $input) {
@@ -724,6 +821,51 @@ export function useDeleteComprehensiveMutation(baseOptions?: Apollo.MutationHook
 export type DeleteComprehensiveMutationHookResult = ReturnType<typeof useDeleteComprehensiveMutation>;
 export type DeleteComprehensiveMutationResult = Apollo.MutationResult<DeleteComprehensiveMutation>;
 export type DeleteComprehensiveMutationOptions = Apollo.BaseMutationOptions<DeleteComprehensiveMutation, DeleteComprehensiveMutationVariables>;
+export const CreateDiagnosticDocument = gql`
+    mutation CreateDiagnostic($input: DiagnosticInput!) {
+  createDiagnostic(input: $input) {
+    diagnostic {
+      id
+      diaryId
+      cie
+      description
+      presumptive
+      definitive
+      repetitive
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type CreateDiagnosticMutationFn = Apollo.MutationFunction<CreateDiagnosticMutation, CreateDiagnosticMutationVariables>;
+
+/**
+ * __useCreateDiagnosticMutation__
+ *
+ * To run a mutation, you first call `useCreateDiagnosticMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDiagnosticMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDiagnosticMutation, { data, loading, error }] = useCreateDiagnosticMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateDiagnosticMutation(baseOptions?: Apollo.MutationHookOptions<CreateDiagnosticMutation, CreateDiagnosticMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDiagnosticMutation, CreateDiagnosticMutationVariables>(CreateDiagnosticDocument, options);
+      }
+export type CreateDiagnosticMutationHookResult = ReturnType<typeof useCreateDiagnosticMutation>;
+export type CreateDiagnosticMutationResult = Apollo.MutationResult<CreateDiagnosticMutation>;
+export type CreateDiagnosticMutationOptions = Apollo.BaseMutationOptions<CreateDiagnosticMutation, CreateDiagnosticMutationVariables>;
 export const CreateDiaryDocument = gql`
     mutation CreateDiary($input: DiaryInput!) {
   createDiary(input: $input) {
@@ -750,6 +892,58 @@ export const CreateDiaryDocument = gql`
         name
         lastname
         phone
+      }
+      vital {
+        id
+        diaryId
+        height
+        weight
+        temp
+        arterial
+        cardiac
+        respiratory
+        oxygen
+        comment
+      }
+      auxiliary {
+        id
+        diaryId
+        service {
+          id
+          title
+        }
+      }
+      diagnostic {
+        id
+        diaryId
+        cie
+        description
+        presumptive
+        definitive
+        repetitive
+      }
+      treatment {
+        id
+        diaryId
+        medicine
+        presentation
+        quantity
+        dose
+        days
+      }
+      history {
+        id
+        diaryId
+        person
+        disease
+      }
+      disease {
+        id
+        diaryId
+        isStart
+        isCourse
+        sickTime
+        comment
       }
     }
     errors {
@@ -878,6 +1072,92 @@ export function useUpdateDiaryStatusMutation(baseOptions?: Apollo.MutationHookOp
 export type UpdateDiaryStatusMutationHookResult = ReturnType<typeof useUpdateDiaryStatusMutation>;
 export type UpdateDiaryStatusMutationResult = Apollo.MutationResult<UpdateDiaryStatusMutation>;
 export type UpdateDiaryStatusMutationOptions = Apollo.BaseMutationOptions<UpdateDiaryStatusMutation, UpdateDiaryStatusMutationVariables>;
+export const CreateDiseaseDocument = gql`
+    mutation CreateDisease($input: DiseaseInput!) {
+  createDisease(input: $input) {
+    disease {
+      id
+      diaryId
+      comment
+      isCourse
+      isStart
+      sickTime
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type CreateDiseaseMutationFn = Apollo.MutationFunction<CreateDiseaseMutation, CreateDiseaseMutationVariables>;
+
+/**
+ * __useCreateDiseaseMutation__
+ *
+ * To run a mutation, you first call `useCreateDiseaseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDiseaseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDiseaseMutation, { data, loading, error }] = useCreateDiseaseMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateDiseaseMutation(baseOptions?: Apollo.MutationHookOptions<CreateDiseaseMutation, CreateDiseaseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDiseaseMutation, CreateDiseaseMutationVariables>(CreateDiseaseDocument, options);
+      }
+export type CreateDiseaseMutationHookResult = ReturnType<typeof useCreateDiseaseMutation>;
+export type CreateDiseaseMutationResult = Apollo.MutationResult<CreateDiseaseMutation>;
+export type CreateDiseaseMutationOptions = Apollo.BaseMutationOptions<CreateDiseaseMutation, CreateDiseaseMutationVariables>;
+export const CreateHistoryDocument = gql`
+    mutation CreateHistory($input: HistoryInput!) {
+  createHistory(input: $input) {
+    history {
+      id
+      diaryId
+      disease
+      person
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type CreateHistoryMutationFn = Apollo.MutationFunction<CreateHistoryMutation, CreateHistoryMutationVariables>;
+
+/**
+ * __useCreateHistoryMutation__
+ *
+ * To run a mutation, you first call `useCreateHistoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateHistoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createHistoryMutation, { data, loading, error }] = useCreateHistoryMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateHistoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateHistoryMutation, CreateHistoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateHistoryMutation, CreateHistoryMutationVariables>(CreateHistoryDocument, options);
+      }
+export type CreateHistoryMutationHookResult = ReturnType<typeof useCreateHistoryMutation>;
+export type CreateHistoryMutationResult = Apollo.MutationResult<CreateHistoryMutation>;
+export type CreateHistoryMutationOptions = Apollo.BaseMutationOptions<CreateHistoryMutation, CreateHistoryMutationVariables>;
 export const CreatePatientDocument = gql`
     mutation CreatePatient($dni: String!) {
   createPatient(dni: $dni) {
@@ -1000,6 +1280,99 @@ export function useCreateServiceMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateServiceMutationHookResult = ReturnType<typeof useCreateServiceMutation>;
 export type CreateServiceMutationResult = Apollo.MutationResult<CreateServiceMutation>;
 export type CreateServiceMutationOptions = Apollo.BaseMutationOptions<CreateServiceMutation, CreateServiceMutationVariables>;
+export const CreateTreatmentDocument = gql`
+    mutation CreateTreatment($input: TreatmentInput!) {
+  createTreatment(input: $input) {
+    treatment {
+      id
+      diaryId
+      days
+      dose
+      medicine
+      presentation
+      quantity
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type CreateTreatmentMutationFn = Apollo.MutationFunction<CreateTreatmentMutation, CreateTreatmentMutationVariables>;
+
+/**
+ * __useCreateTreatmentMutation__
+ *
+ * To run a mutation, you first call `useCreateTreatmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTreatmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTreatmentMutation, { data, loading, error }] = useCreateTreatmentMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateTreatmentMutation(baseOptions?: Apollo.MutationHookOptions<CreateTreatmentMutation, CreateTreatmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateTreatmentMutation, CreateTreatmentMutationVariables>(CreateTreatmentDocument, options);
+      }
+export type CreateTreatmentMutationHookResult = ReturnType<typeof useCreateTreatmentMutation>;
+export type CreateTreatmentMutationResult = Apollo.MutationResult<CreateTreatmentMutation>;
+export type CreateTreatmentMutationOptions = Apollo.BaseMutationOptions<CreateTreatmentMutation, CreateTreatmentMutationVariables>;
+export const CreateVitalDocument = gql`
+    mutation CreateVital($input: VitalInput!) {
+  createVital(input: $input) {
+    vital {
+      id
+      diaryId
+      height
+      weight
+      temp
+      arterial
+      cardiac
+      respiratory
+      oxygen
+      comment
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    `;
+export type CreateVitalMutationFn = Apollo.MutationFunction<CreateVitalMutation, CreateVitalMutationVariables>;
+
+/**
+ * __useCreateVitalMutation__
+ *
+ * To run a mutation, you first call `useCreateVitalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateVitalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createVitalMutation, { data, loading, error }] = useCreateVitalMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateVitalMutation(baseOptions?: Apollo.MutationHookOptions<CreateVitalMutation, CreateVitalMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateVitalMutation, CreateVitalMutationVariables>(CreateVitalDocument, options);
+      }
+export type CreateVitalMutationHookResult = ReturnType<typeof useCreateVitalMutation>;
+export type CreateVitalMutationResult = Apollo.MutationResult<CreateVitalMutation>;
+export type CreateVitalMutationOptions = Apollo.BaseMutationOptions<CreateVitalMutation, CreateVitalMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -1107,6 +1480,59 @@ export const DiaryDocument = gql`
       lastname
       phone
     }
+    vital {
+      id
+      diaryId
+      height
+      weight
+      temp
+      arterial
+      cardiac
+      respiratory
+      oxygen
+      comment
+    }
+    auxiliary {
+      id
+      diaryId
+      comment
+      service {
+        id
+        title
+      }
+    }
+    diagnostic {
+      id
+      diaryId
+      cie
+      description
+      presumptive
+      definitive
+      repetitive
+    }
+    treatment {
+      id
+      diaryId
+      medicine
+      presentation
+      quantity
+      dose
+      days
+    }
+    history {
+      id
+      diaryId
+      person
+      disease
+    }
+    disease {
+      id
+      diaryId
+      isStart
+      isCourse
+      sickTime
+      comment
+    }
   }
 }
     `;
@@ -1188,6 +1614,49 @@ export type PatientsQueryHookResult = ReturnType<typeof usePatientsQuery>;
 export type PatientsLazyQueryHookResult = ReturnType<typeof usePatientsLazyQuery>;
 export type PatientsSuspenseQueryHookResult = ReturnType<typeof usePatientsSuspenseQuery>;
 export type PatientsQueryResult = Apollo.QueryResult<PatientsQuery, PatientsQueryVariables>;
+export const AllServicesDocument = gql`
+    query AllServices {
+  allServices {
+    id
+    title
+    comprehensive {
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useAllServicesQuery__
+ *
+ * To run a query within a React component, call `useAllServicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAllServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAllServicesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAllServicesQuery(baseOptions?: Apollo.QueryHookOptions<AllServicesQuery, AllServicesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AllServicesQuery, AllServicesQueryVariables>(AllServicesDocument, options);
+      }
+export function useAllServicesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AllServicesQuery, AllServicesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AllServicesQuery, AllServicesQueryVariables>(AllServicesDocument, options);
+        }
+export function useAllServicesSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<AllServicesQuery, AllServicesQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<AllServicesQuery, AllServicesQueryVariables>(AllServicesDocument, options);
+        }
+export type AllServicesQueryHookResult = ReturnType<typeof useAllServicesQuery>;
+export type AllServicesLazyQueryHookResult = ReturnType<typeof useAllServicesLazyQuery>;
+export type AllServicesSuspenseQueryHookResult = ReturnType<typeof useAllServicesSuspenseQuery>;
+export type AllServicesQueryResult = Apollo.QueryResult<AllServicesQuery, AllServicesQueryVariables>;
 export const ServicesDocument = gql`
     query Services($isSurgery: Boolean!) {
   services(isSurgery: $isSurgery) {

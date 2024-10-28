@@ -1,6 +1,5 @@
 import { useDeletePatientMutation } from "@/gen/gql";
 import { Reference, StoreObject } from "@apollo/client";
-import Link from "next/link";
 import React from "react";
 
 type Patient = {
@@ -66,23 +65,17 @@ function PatientCard({ patient }: Props) {
                       opacity=".4"
                     ></path>
                   </svg>
-                  <div className="flex__item">{c.diaryCount}</div>
+                  <div className="flex__item">{c.diaryCount ?? 0}</div>
                 </div>
               </div>
             </div>
             <div className="s-post-summary--content w100">
               <h4 className="flex--item v-truncate-companie">
                 <div className="s-link mb4">{c.dni}</div>
-                <Link
-                  passHref
-                  legacyBehavior
-                  href={`/patient/[patientId]`}
-                  as={`/patient/${c.id}`}
-                >
-                  <a className="s-link s-post-summary--content-excerpt">
-                    {c.name.toUpperCase()}
-                  </a>
-                </Link>
+
+                <div className="s-link s-post-summary--content-excerpt">
+                  {c.name.toUpperCase()} {c.lastname.toUpperCase()}
+                </div>
               </h4>
 
               <div className="s-post-summary--meta mt4">

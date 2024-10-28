@@ -1,0 +1,17 @@
+mutation CreateTreatment($input: TreatmentInput!) {
+  createTreatment(input: $input) {
+    treatment {
+      id
+      diaryId
+      days
+      dose
+      medicine
+      presentation
+      quantity
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
