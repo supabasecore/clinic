@@ -141,7 +141,7 @@ export type DiaryInput = {
   interconsultation?: InputMaybe<Scalars['String']['input']>;
   intervention?: InputMaybe<Scalars['String']['input']>;
   nextTime?: InputMaybe<Scalars['DateTimeISO']['input']>;
-  patientId: Scalars['String']['input'];
+  patientId: Scalars['Int']['input'];
   price?: InputMaybe<Scalars['Float']['input']>;
   serviceId: Scalars['Int']['input'];
   startTime: Scalars['DateTimeISO']['input'];

@@ -5,6 +5,7 @@ import {
   DiaryDocument,
   DiaryQuery,
   useCreateDiaryMutation,
+  usePatientsQuery,
   useServicesQuery,
 } from "@/gen/gql";
 import Loading from "../Loading";
@@ -17,7 +18,6 @@ import { toErrorMap } from "@/utils/toErrorMap";
 
 type CreateProps = {
   serviceId: number;
-  patientId: string;
   price?: number | null;
   status: string;
   intervention?: string | null;
@@ -41,13 +41,45 @@ const DiaryCreate = ({ isOpen, handleClose }: Props) => {
     variables: { isSurgery: false },
   });
 
+  const { data: patients, loading: patientsLoading } = usePatientsQuery();
+
+  if (!patients && !patientsLoading) {
+    return <div>Servidor caído</div>;
+  }
+
   if (!loading && !data) {
     return <div>Servidor caído</div>;
   }
 
+  const [patientId, setPatientId] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  if (!patients && !patientsLoading) {
+    return <div>Servidor caído</div>;
+  }
+
+  const filteredPatients = patients?.patients?.filter((patient) =>
+    `${patient.name} ${patient.lastname}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  const handlePatientSelect = (id: number, name: string, lastname: string) => {
+    setPatientId(id);
+    setSearchTerm(`${name} ${lastname}`);
+  };
   const [serviceId, setServiceId] = useState<number>(Number);
   const handleToggleChange = (id: number) => {
     setServiceId(id);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (value === "") {
+      setPatientId(0);
+    }
   };
 
   const serviceIdResponse = serviceId ?? 0;
@@ -69,7 +101,7 @@ const DiaryCreate = ({ isOpen, handleClose }: Props) => {
       <Formik
         initialValues={{
           serviceId,
-          patientId: "",
+          patientId,
           price,
           status: "",
           intervention: "",
@@ -83,7 +115,7 @@ const DiaryCreate = ({ isOpen, handleClose }: Props) => {
             variables: {
               input: {
                 serviceId: serviceIdResponse,
-                patientId: values.patientId,
+                patientId: patientId ?? 0,
                 interconsultation: values.interconsultation,
                 intervention: values.intervention,
                 status: selectedOption,
@@ -154,7 +186,47 @@ const DiaryCreate = ({ isOpen, handleClose }: Props) => {
                       <option value="CANCEL">Suspendida</option>
                     </select>
                   </div>
-                  <InputField label="Paciente" name="patientId" />
+
+                  <aside className="flex--item flex--item2 s-card bar-md c-auto fl-grow1 mt8">
+                    <div className="d-flex as-end fd-column h100 js-highlight-box-badges">
+                      <div className="flex--item fs-category fs-fine fc-black-400 mb8">
+                        Pacientes
+                      </div>
+                      {!patients && patientsLoading ? (
+                        <Loading />
+                      ) : (
+                        <>
+                          <input
+                            type="text"
+                            placeholder="Paciente"
+                            value={searchTerm}
+                            onChange={handleInputChange}
+                            className="s-input"
+                          />
+
+                          {searchTerm && filteredPatients && (
+                            <ul className="mt8">
+                              {filteredPatients.map((patient) => (
+                                <li
+                                  key={patient.id}
+                                  onClick={() =>
+                                    handlePatientSelect(
+                                      patient.id,
+                                      patient.name,
+                                      patient.lastname
+                                    )
+                                  }
+                                  className="s-link my8"
+                                >
+                                  {patient.name} {patient.lastname}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </aside>
                   <aside className="flex--item flex--item2 s-card bar-md c-auto fl-grow1 mt8">
                     <div className="d-flex as-end fd-column h100 js-highlight-box-badges">
                       <div className="flex--item fs-category fs-fine fc-black-400 mb8">
@@ -276,6 +348,21 @@ const DiaryCreate = ({ isOpen, handleClose }: Props) => {
                         value={price !== null ? price.toString() : ""}
                       />
                     </div>
+                  )}
+
+                  {selectedOption === "CANCEL" && (
+                    <>
+                      <InputField
+                        textarea
+                        label="Intervención"
+                        name="intervention"
+                      />
+                      <InputField
+                        textarea
+                        label="Interconsulta"
+                        name="interconsultation"
+                      />
+                    </>
                   )}
 
                   <Button
