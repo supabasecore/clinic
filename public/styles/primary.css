@@ -827,7 +827,7 @@ body.theme-highcontrast .s-btn__github {
 
 a,.s-link {
     text-decoration: none;
-    color: var(--theme-link-color);
+    color: hsl(130,65%,43%);
     cursor: pointer;
     user-select: auto
 }
@@ -839,7 +839,7 @@ a.s-link__visited:visited,.s-link.s-link__visited:visited {
 
 a:hover,.s-link:hover,a.s-link__visited:hover,.s-link.s-link__visited:hover,a:active,.s-link:active,a.s-link__visited:active,.s-link.s-link__visited:active {
     /* color: var(--theme-link-color-hover); */
-    color: hsl(206,100%,52%);
+    color: hsl(125, 99%, 28%);
     text-decoration: none
 }
 
@@ -3794,8 +3794,8 @@ body.theme-highcontrast .post-tag,body.theme-highcontrast .moderator-tag,body.th
 }
 
 .post-tag,.geo-tag,.container .chosen-choices .search-choice,.container .chosen-container-multi .chosen-choices li.search-choice {
-    color: var(--theme-tag-color);
-    background-color: var(--theme-tag-background-color);
+    color: hsl(210, 8%, 35%);
+    background-color: hsl(210, 8%, 85%);;
     border-color: var(--theme-tag-border-color)
 }
 
@@ -15930,7 +15930,8 @@ body>.container {
     background: none;
     display: flex;
     justify-content: space-between;
-    margin: 0 auto
+    margin: 0 auto;
+    flex-direction: row-reverse
 }
 
 body .container-cart {
@@ -16479,7 +16480,7 @@ body.floating-content .site-header .site-header--container,html.html__unpinned-l
     font-weight: bold;
     background: var(--black-050);
     color: var(--black-900);
-    border-right: 3px solid hsl(224.63deg 100% 67.84%)
+    border-left: 3px solid hsl(130,65%,43%)
     /* border-right: 3px solid var(--theme-primary-color) AEA XD CORREGIR*/
 }
 

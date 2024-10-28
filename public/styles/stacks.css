@@ -312,7 +312,7 @@ body.theme-highcontrast .s-badge__gold,body.theme-highcontrast .s-badge__silver,
 
 .s-badge__bounty {
     border-color: transparent;
-    background-color: var(--blue-600);
+    background-color: hsl(130, 65%,43%);
     color: var(--white)
 }
 
@@ -1199,7 +1199,7 @@ body.theme-highcontrast .s-label--status {
     }
 
     .s-radio:checked {
-        border-color: var(--theme-secondary-400);
+        border-color: hsl(130,65%,43%);
         border-width: .30769231em;
         background-color: hsl(0,0%,100%)
     }
@@ -1972,7 +1972,7 @@ body.theme-highcontrast .s-post-summary--stats .s-post-summary--stats-item.has-a
 
 .s-post-summary--stats .s-post-summary--stats-item.has-bounty {
     color: var(--white);
-    background-color: var(--blue-600)
+    background-color: hsl(130,65%,43%);
 }
 
 .s-post-summary--stats .s-post-summary--stats-item.is-warm {
@@ -3917,7 +3917,7 @@ body:not(.theme-dark),body.theme-dark .theme-light__forced,body.theme-system .th
     --orange: hsl(27,90%,55%);
     --yellow: hsl(47,83%,91%);
     --green: hsl(140,40%,55%);
-    --blue: hsl(206,100%,40%);
+    --blue: hsl(130,65%,43%);
     --powder: hsl(205,46%,92%);
     --red: hsl(213,70%,77%);
     --black-025: hsl(210,8%,97.5%);
